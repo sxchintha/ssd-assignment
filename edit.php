@@ -88,7 +88,7 @@ $result = mysqli_query($conn, "UPDATE `employee` SET `firstName`='$firstname',`l
 				<li><a class="homeblack" href="index.html">HOME</a></li>
 				<li><a class="homeblack" href="addemp.php">Add Employee</a></li>
 				<li><a class="homered" href="viewemp.php">View Employee</a></li>
-				<li><a class="homeblack" href="elogin.html">Log Out</a></li>
+				<li><a class="homeblack" href="process/logout.php">Log Out</a></li>
 			</ul>
 		</nav>
 	</header>

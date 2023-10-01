@@ -1,38 +1,64 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
+require_once 'constants.php';
+require_once 'process/dbh.php';
 
-// check if session is already started
-echo "Session status: " . session_status();
-echo "<br>";
+
 if (session_status() == PHP_SESSION_NONE) {
-    echo "Starting session";
-    echo "<br>";
     session_start();
 }
 
 $client = new Google\Client();
 $client->setAuthConfig('client_secret.json');
-// $client->addScope(Google\Service\Drive::DRIVE_METADATA_READONLY);
-// add scope to see primary google account email address
 $client->addScope(Google\Service\Oauth2::USERINFO_EMAIL);
 $client->addScope(Google\Service\Oauth2::USERINFO_PROFILE);
 
 
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-    echo "Access token is set";
-    $client->setAccessToken($_SESSION['access_token']);
-    // get profile info
-    $oauth2 = new Google\Service\Oauth2($client);
-    $userInfo = $oauth2->userinfo->get();
-    // echo "<pre>";
-    print_r($userInfo);
-    // echo "</pre>";
-    // exit;
-    // echo json_encode($files);
+    try {
+        $client->setAccessToken($_SESSION['access_token']);
+        // get profile info
+        $oauth2 = new Google\Service\Oauth2($client);
+        $userInfo = $oauth2->userinfo->get();
+    } catch (Exception $e) {
+        $_SESSION = [];
+        session_destroy();
+        header('Location: ' . filter_var($AUTH_CALLBACK_URL, FILTER_SANITIZE_URL));
+    }
+
+    // check userInfo is not null
+    if ($userInfo == null || $userInfo->email == null) {
+        // destroy session
+        $_SESSION = [];
+        session_destroy();
+        header('Location: ' . filter_var($AUTH_CALLBACK_URL, FILTER_SANITIZE_URL));
+    } else {
+        $_SESSION['email'] = $userInfo->email;
+
+        // check if user is an employee
+        $checkEmployee = "SELECT id FROM employee WHERE email = '" . $_SESSION['email'] . "'";
+        $result = mysqli_query($conn, $checkEmployee);
+        $row = mysqli_fetch_array($result);
+
+        print_r($row);
+
+        if ($row[0] == 0) {
+            // destroy session
+            $_SESSION = [];
+            session_destroy();
+            $error = "not_employee";
+            header('Location: ' . filter_var($EMPLOYEE_LOGIN_URL . '?error=' . $error, FILTER_SANITIZE_URL));
+        } else {
+            // set session variables
+            $_SESSION['id'] = $row['id'];
+            $_SESSION['name'] = $userInfo->name;
+            $_SESSION['picture'] = $userInfo->picture;
+            $_SESSION['googleId'] = $userInfo->id;
+            $_SESSION['firstName'] = $userInfo->givenName;
+
+            header('Location: ' . filter_var($EMPLOYEE_WELCOME_URL, FILTER_SANITIZE_URL));
+        }
+    }
 } else {
-    echo "Access token is not set";
-    $redirect_uri = 'http://localhost/ssd-assignment/oauth2callback.php';
-    //   $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/ssd-assignment/oauth2callback.php';
-    //   header('Location: ' . $redirect_uri);
-    header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+    header('Location: ' . filter_var($AUTH_CALLBACK_URL, FILTER_SANITIZE_URL));
 }

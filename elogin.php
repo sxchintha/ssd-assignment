@@ -14,7 +14,7 @@
 			<h1>XYZ Corp.</h1>
 			<ul id="navli">
 				<li><a class="homeblack" href="index.html">HOME</a></li>
-				<li><a class="homered" href="elogin.html">Employee Login</a></li>
+				<li><a class="homered" href="elogin.php">Employee Login</a></li>
 				<li><a class="homeblack" href="alogin.html">Admin Login</a></li>
 
 			</ul>
@@ -32,20 +32,30 @@
 			<input type="password" name="pwd" placeholder="Enter Password" required="required">
 			<input type="submit" name="login-submit" value="Login">
 
-			<div id="btn-google-login"></div>
+			<a href="oauth2login.php">
+				<div id="btn-google-login"></div>
+			</a>
 			<br>
 		</form>
 
 	</div>
+
+
 </body>
+
 <script>
-	const googleBtn = document.getElementById('btn-google-login');
-
-	div.setAttribute("href", "oauth2login.php");
-
-	div.addEventListener("click", function (event) {
-		event.preventDefault();
-	});
+	<?php
+	if (isset($_GET['error'])) {
+		$error = $_GET['error'];
+		if ($error == 'no_token') {
+			echo "alert('No token! Please login again!')";
+		} else if ($error == 'not_employee') {
+			echo "alert('You are not an employee!')";
+		} else if ($error == 'not_admin') {
+			echo "alert('You are not an admin!')";
+		}
+	}
+	?>
 </script>
 
 </html>
