@@ -1,0 +1,8 @@
+/vendor/bin
+/vendor/composer
+/vendor/firebase
+/vendor/google
+/vendor/monolog
+/vendor/phpseclib
+/vendor/psr
+client_secret.json
