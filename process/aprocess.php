@@ -11,17 +11,15 @@ $sql = "SELECT * from `alogin` WHERE email = '$email' AND password = '$password'
 
 $result = mysqli_query($conn, $sql);
 
-if(mysqli_num_rows($result) == 1){
-	
+$csrf_token = checkInput($_POST['csrf_token']);
 
-	//echo ("logged in");
-	header("Location: ..//aloginwel.php");
-}
-
-else{
-	echo ("<SCRIPT LANGUAGE='JavaScript'>
-    window.alert('Invalid Email or Password')
+// check if csrf token is valid
+if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) { 
+    echo ('<meta http-equiv="Content-Security-Policy" content="default-src_\'self\'">'); 
+    echo ("<SCRIPT LANGUAGE='JavaScript'>
+    window.alert('Request forgery detected') 
     window.location.href='javascript:history.go(-1)';
-    </SCRIPT>");
+</SCRIPT>"); 
+exit;
 }
 ?>
