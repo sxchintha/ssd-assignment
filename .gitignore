@@ -6,3 +6,4 @@
 /vendor/phpseclib
 /vendor/psr
 client_secret.json
+temp.php
