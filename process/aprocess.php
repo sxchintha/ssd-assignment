@@ -2,6 +2,7 @@
 
 require_once ('dbh.php');
 
+
 $email = $_POST['mailuid'];
 $password = $_POST['pwd'];
 
@@ -9,9 +10,15 @@ $sql = "SELECT * from `alogin` WHERE email = '$email' AND password = '$password'
 
 //echo "$sql";
 
+
 $result = mysqli_query($conn, $sql);
 
+
 $csrf_token = checkInput($_POST['csrf_token']);
+
+if (!isset($ SESSION['csrf_token']) || !hash equals($_SESSION['csrf_token'], $csrf_token)) { header("Location: ../403.html?error=csrf");
+}
+exit;
 
 // check if csrf token is valid
 if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) { 
