@@ -68,9 +68,6 @@ if (in_array($filecheck, $fileextstored)) {
     echo "Insertion Done of Rank";
     echo "<br>";
 
-    echo $sql;
-    echo "<br>";
-    print_r($result);
     if (($result) == 1) {
 
         echo ("<SCRIPT LANGUAGE='JavaScript'>

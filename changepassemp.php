@@ -44,7 +44,7 @@ if(isset($_POST['update']))
   if($result){
   while($res = mysqli_fetch_assoc($result)){
   $old = $res['password'];
-  echo "$old";
+  // echo "$old";
 }
 }
 

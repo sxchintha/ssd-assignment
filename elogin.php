@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+session_id("ssd-assignment");
+session_start();
+?>
+
 <head>
 	<title>Log In | XYZ Corporation</title>
 	<meta charset="utf-8" />

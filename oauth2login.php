@@ -5,6 +5,7 @@ require_once 'process/dbh.php';
 
 
 if (session_status() == PHP_SESSION_NONE) {
+    session_id("ssd-assignment");
     session_start();
 }
 
@@ -23,6 +24,7 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
     } catch (Exception $e) {
         $_SESSION = [];
         session_destroy();
+        session_write_close();
         header('Location: ' . filter_var($AUTH_CALLBACK_URL, FILTER_SANITIZE_URL));
     }
 
@@ -31,22 +33,22 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
         // destroy session
         $_SESSION = [];
         session_destroy();
+        session_write_close();
         header('Location: ' . filter_var($AUTH_CALLBACK_URL, FILTER_SANITIZE_URL));
     } else {
-        $_SESSION['email'] = $userInfo->email;
+        $userEmail = $userInfo->email;
 
         // check if user is an employee
-        $checkEmployee = "SELECT id FROM employee WHERE email = '" . $_SESSION['email'] . "'";
+        $checkEmployee = "SELECT id FROM employee WHERE email = '" . $userEmail . "'";
         $result = mysqli_query($conn, $checkEmployee);
         $row = mysqli_fetch_array($result);
-
-        print_r($row);
 
         if ($row[0] == 0) {
             // destroy session
             $_SESSION = [];
             session_destroy();
             $error = "not_employee";
+            session_write_close();
             header('Location: ' . filter_var($EMPLOYEE_LOGIN_URL . '?error=' . $error, FILTER_SANITIZE_URL));
         } else {
             // set session variables
@@ -55,10 +57,13 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
             $_SESSION['picture'] = $userInfo->picture;
             $_SESSION['googleId'] = $userInfo->id;
             $_SESSION['firstName'] = $userInfo->givenName;
+            $_SESSION['email'] = $userEmail;
 
+            session_write_close();
             header('Location: ' . filter_var($EMPLOYEE_WELCOME_URL, FILTER_SANITIZE_URL));
         }
     }
 } else {
+    session_write_close();
     header('Location: ' . filter_var($AUTH_CALLBACK_URL, FILTER_SANITIZE_URL));
 }

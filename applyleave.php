@@ -5,7 +5,6 @@
 	$result = mysqli_query($conn, $sql);
 	$employee = mysqli_fetch_array($result);
 	$empName = ($employee['firstName']);
-	//echo "$id";
 ?>
 
 <html>
