@@ -1,15 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <?php
 session_id("ssd-assignment");
 session_start();
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="
+		default-src 'self' https://fonts.googleapis.com; 
+		font-src 'self' https://fonts.gstatic.com;">
 	<title>Log In | XYZ Corporation</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="stylelogin.css">
 </head>
 
@@ -30,11 +32,19 @@ session_start();
 	<div class="loginbox">
 		<img src="assets/avatar.png" class="avatar" alt="avatar" />
 		<h1>Login Here</h1>
+
+		<?php
+		session_start();
+		$token = bin2hex(random_bytes(32));
+		$_SESSION['csrf_token'] = $token;
+		?>
+
 		<form action="process/eprocess.php" method="POST">
 			<p>Email</p>
 			<input type="text" name="mailuid" placeholder="Enter Email Address" required="required">
 			<p>Password</p>
 			<input type="password" name="pwd" placeholder="Enter Password" required="required">
+			<input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
 			<input type="submit" name="login-submit" value="Login">
 
 			<a href="oauth2login.php">

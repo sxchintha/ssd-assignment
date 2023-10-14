@@ -12,14 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST' || !isset($_POST['mailuid']) || !isset(
 $csrf_token = checkInput($_POST['csrf_token']);
 
 // check if csrf token is valid
-if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
-    echo ('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">');
-    echo ("<SCRIPT LANGUAGE='JavaScript'>
-    window.alert('Request forgery detected')
-    window.location.href='javascript:history.go(-1)';
-    </SCRIPT>");
-    exit;
-}
+// if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+//     echo ('<meta http-equiv="Content-Security-Policy" content="default-src \'self\'">');
+//     echo ("<SCRIPT LANGUAGE='JavaScript'>
+//     window.alert('Request forgery detected')
+//     window.location.href='javascript:history.go(-1)';
+//     </SCRIPT>");
+//     exit;
+// }
 
 // check if csrf token is valid
 if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
